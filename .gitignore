@@ -205,3 +205,27 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Project data outputs
+data/
+raw/
+processed/
+warehouse_output/
+datamarts/
+
+# Airflow / Spark local artifacts
+airflow.db
+airflow.cfg
+airflow-logs/
+spark-warehouse/
+metastore_db/
