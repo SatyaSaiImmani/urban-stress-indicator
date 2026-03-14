@@ -1,0 +1,8 @@
+# collectors/open311/cities.yaml
+cities:
+  - city_id: boston
+    base_url: "https://311.boston.gov/open311/v2"
+    requests_path: "/requests.json"
+    services_path: "/services.json"
+    timezone: "America/New_York"
+    requires_api_key: true
