@@ -7,6 +7,7 @@ import os
 from collectors.open311.client import Open311Client
 from collectors.open311.config import load_city_config
 from collectors.open311.utils import utc_now_iso, make_batch_id, ensure_dir, write_json
+from collectors.open311.s3_io import S3Writer
 
 
 def build_output_dir(city: str, ingest_date: str, batch_id: str) -> Path:
@@ -41,6 +42,23 @@ def main() -> None:
 
     status_code, data, headers = client.get(city_cfg["requests_path"], params=params)
 
+    # Data Sanity Checks
+
+    if not data:
+        raise RuntimeError("Open311 response returned zero records")
+
+    if isinstance(data, list) and len(data) < 5:
+        print("WARNING: Very small response size, verify API window")
+
+    if isinstance(data, list):
+        sample = data[0]
+        required = ["service_request_id", "requested_datetime"]
+
+        for field in required:
+            if field not in sample:
+                print(f"WARNING: Expected field missing: {field}")
+
+
     record_count = len(data) if isinstance(data, list) else 1
     output_dir = build_output_dir(args.city, ingest_date, batch_id)
 
@@ -61,12 +79,25 @@ def main() -> None:
         "response_headers": headers,
     }
 
+    # Logic to Save the files
+
     write_json(response_path, data)
     write_json(manifest_path, manifest)
 
     print(f"Saved raw response to: {response_path}")
     print(f"Saved manifest to: {manifest_path}")
     print(f"Record count: {record_count}")
+
+    # Ingestion Summary
+
+    print("------ Open311 Ingestion Summary ------")
+    print("City:", args.city)
+    print("Batch ID:", batch_id)
+    print("Ingest Time:", ingested_at)
+    print("Records:", record_count)
+    print("Output:", response_path)
+    print("---------------------------------------")
+
 
 
 if __name__ == "__main__":
