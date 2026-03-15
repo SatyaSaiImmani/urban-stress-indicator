@@ -1,0 +1,15 @@
+raw_category,normalized_category,is_infrastructure,is_emergency_type
+Broken Sidewalk,Sidewalk Infrastructure,1,0
+Pothole,Road Infrastructure,1,0
+Damaged Sign,Traffic Infrastructure,1,0
+Requests for Street Cleaning,Sanitation,0,0
+Residential Trash out Illegally,Sanitation Violation,0,0
+Overflowing or Unkept Dumpster,Sanitation Violation,0,0
+Rodent Activity,Public Health,0,1
+Needle Cleanup,Public Health Hazard,0,1
+Poor Conditions of Property,Property Violation,0,0
+Unsatisfactory Living Conditions,Housing Violation,0,1
+Illegal Parking,Traffic Violation,0,0
+Abandoned Vehicle,Traffic Violation,0,0
+Abandoned Bicycle,Public Space Issue,0,0
+Other,General Request,0,0

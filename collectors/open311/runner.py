@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import os
-from datetime import datetime, timezone
 from pathlib import Path
 
 from collectors.open311.client import Open311Client
@@ -50,7 +49,7 @@ def main() -> None:
     if isinstance(data, list) and len(data) < 5:
         print("WARNING: Very small response size, verify API window")
 
-    if isinstance(data, list):
+    if isinstance(data, list) and len(data) > 0:
         sample = data[0]
         required = ["service_request_id", "requested_datetime"]
         for field in required:
@@ -63,33 +62,24 @@ def main() -> None:
     response_path = output_dir / "response.json"
     manifest_path = output_dir / "manifest.json"
 
+    write_json(response_path, data)
+
     manifest = {
         "source": "open311",
         "city": args.city,
-        "base_url": city_cfg["base_url"],
-        "endpoint": city_cfg["requests_path"],
-        "request_params": params,
-        "ingested_at_utc": ingested_at,
         "batch_id": batch_id,
-        "http_status": status_code,
+        "ingested_at_utc": ingested_at,
         "record_count": record_count,
-        "response_file": str(response_path),
-        "response_headers": headers,
-        "bucket": None,
-        "s3_prefix": None,
+        "updated_after": args.updated_after,
+        "updated_before": args.updated_before,
+        "status_code": status_code,
     }
-
-    write_json(response_path, data)
 
     if args.bucket:
         s3 = S3Writer(args.bucket)
-
-        dt = datetime.now(timezone.utc)
-        year = dt.strftime("%Y")
-        month = dt.strftime("%m")
-        day = dt.strftime("%d")
-
-        s3_prefix = f"raw/open311/year={year}/month={month}/day={day}/batch_id={batch_id}"
+        s3_prefix = (
+            f"raw/open311/city={args.city}/ingest_date={ingest_date}/batch_id={batch_id}"
+        )
 
         manifest["bucket"] = args.bucket
         manifest["s3_prefix"] = s3_prefix
@@ -113,6 +103,8 @@ def main() -> None:
     print("Ingest Time:", ingested_at)
     print("Records:", record_count)
     print("Output:", response_path)
+    if args.bucket:
+        print("S3 Prefix:", manifest["s3_prefix"])
     print("---------------------------------------")
 
 
