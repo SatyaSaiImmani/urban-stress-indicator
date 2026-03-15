@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import os
+from datetime import datetime, timezone
+from pathlib import Path
 
 from collectors.open311.client import Open311Client
 from collectors.open311.config import load_city_config
-from collectors.open311.utils import utc_now_iso, make_batch_id, ensure_dir, write_json
 from collectors.open311.s3_io import S3Writer
+from collectors.open311.utils import ensure_dir, make_batch_id, utc_now_iso, write_json
 
 
 def build_output_dir(city: str, ingest_date: str, batch_id: str) -> Path:
@@ -21,6 +22,7 @@ def main() -> None:
     parser.add_argument("--city", required=True)
     parser.add_argument("--updated-after", required=True)
     parser.add_argument("--updated-before", required=True)
+    parser.add_argument("--bucket", required=False, help="Optional S3 bucket")
     args = parser.parse_args()
 
     city_cfg = load_city_config(args.city)
@@ -42,8 +44,6 @@ def main() -> None:
 
     status_code, data, headers = client.get(city_cfg["requests_path"], params=params)
 
-    # Data Sanity Checks
-
     if not data:
         raise RuntimeError("Open311 response returned zero records")
 
@@ -53,11 +53,9 @@ def main() -> None:
     if isinstance(data, list):
         sample = data[0]
         required = ["service_request_id", "requested_datetime"]
-
         for field in required:
             if field not in sample:
                 print(f"WARNING: Expected field missing: {field}")
-
 
     record_count = len(data) if isinstance(data, list) else 1
     output_dir = build_output_dir(args.city, ingest_date, batch_id)
@@ -77,18 +75,37 @@ def main() -> None:
         "record_count": record_count,
         "response_file": str(response_path),
         "response_headers": headers,
+        "bucket": None,
+        "s3_prefix": None,
     }
 
-    # Logic to Save the files
-
     write_json(response_path, data)
+
+    if args.bucket:
+        s3 = S3Writer(args.bucket)
+
+        dt = datetime.now(timezone.utc)
+        year = dt.strftime("%Y")
+        month = dt.strftime("%m")
+        day = dt.strftime("%d")
+
+        s3_prefix = f"raw/open311/year={year}/month={month}/day={day}/batch_id={batch_id}"
+
+        manifest["bucket"] = args.bucket
+        manifest["s3_prefix"] = s3_prefix
+
+        s3.upload_file(response_path, f"{s3_prefix}/response.json")
+        print(f"Uploaded to S3: s3://{args.bucket}/{s3_prefix}/response.json")
+
     write_json(manifest_path, manifest)
+
+    if args.bucket:
+        s3.upload_file(manifest_path, f"{manifest['s3_prefix']}/manifest.json")
+        print(f"Uploaded to S3: s3://{args.bucket}/{manifest['s3_prefix']}/manifest.json")
 
     print(f"Saved raw response to: {response_path}")
     print(f"Saved manifest to: {manifest_path}")
     print(f"Record count: {record_count}")
-
-    # Ingestion Summary
 
     print("------ Open311 Ingestion Summary ------")
     print("City:", args.city)
@@ -97,7 +114,6 @@ def main() -> None:
     print("Records:", record_count)
     print("Output:", response_path)
     print("---------------------------------------")
-
 
 
 if __name__ == "__main__":

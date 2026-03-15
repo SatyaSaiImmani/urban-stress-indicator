@@ -229,3 +229,7 @@ airflow.cfg
 airflow-logs/
 spark-warehouse/
 metastore_db/
+
+# Credentials
+
+aws_credentials.sh
