@@ -4,10 +4,12 @@ import argparse
 import os
 from pathlib import Path
 
-from collectors.open311.client import Open311Client
-from collectors.open311.config import load_city_config
-from collectors.open311.s3_io import S3Writer
-from collectors.open311.utils import ensure_dir, make_batch_id, utc_now_iso, write_json
+from client import Open311Client
+from config import load_city_config
+from s3_io import S3Writer
+from utils import ensure_dir, make_batch_id, utc_now_iso, write_json
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def build_output_dir(city: str, ingest_date: str, batch_id: str) -> Path:
@@ -15,13 +17,17 @@ def build_output_dir(city: str, ingest_date: str, batch_id: str) -> Path:
     ensure_dir(base)
     return base
 
-
 def main() -> None:
     parser = argparse.ArgumentParser(description="Open311 raw collector")
     parser.add_argument("--city", required=True)
     parser.add_argument("--updated-after", required=True)
     parser.add_argument("--updated-before", required=True)
-    parser.add_argument("--bucket", required=False, help="Optional S3 bucket")
+    parser.add_argument("--bucket", required=False, help="Optional S3 bucket", default=os.getenv("S3_BUCKET_NAME"))
+    parser.add_argument(
+        "--batch-id",
+        required=False,
+        help="Optional externally supplied batch id (useful for Airflow)",
+    )
     args = parser.parse_args()
 
     city_cfg = load_city_config(args.city)
@@ -32,7 +38,7 @@ def main() -> None:
         api_key=api_key,
     )
 
-    batch_id = make_batch_id()
+    batch_id = args.batch_id if args.batch_id else make_batch_id()
     ingested_at = utc_now_iso()
     ingest_date = ingested_at[:10]
 
