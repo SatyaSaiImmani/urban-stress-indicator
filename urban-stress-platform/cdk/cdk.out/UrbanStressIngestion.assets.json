@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "a7c06b562580b1e80d05e79211e20434f1a5867c7ca266dc35261c4c96e28e28": {
+      "displayName": "UrbanStressIngestion Template",
+      "source": {
+        "path": "UrbanStressIngestion.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "677542194461-us-east-1-6b153a87": {
+          "bucketName": "cdk-hnb659fds-assets-677542194461-us-east-1",
+          "objectKey": "a7c06b562580b1e80d05e79211e20434f1a5867c7ca266dc35261c4c96e28e28.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:aws:iam::677542194461:role/LabRole"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -233,3 +233,6 @@ metastore_db/
 # Credentials
 
 aws_credentials.sh
+set_aws_creds.bash
+*_creds.bash
+*_creds.sh

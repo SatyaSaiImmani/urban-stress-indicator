@@ -1,0 +1,280 @@
+{
+  "/UrbanStressIngestion": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/CollectorOpen311": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CollectorOpen311"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/CollectorNoaa": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CollectorNoaa"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/VerdictGen": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VerdictGen"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/DailyCollectorRule": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyCollectorRule"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/Open311EventPermission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Open311EventPermission"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/NoaaEventPermission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NoaaEventPermission"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/BronzeBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BronzeBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/SignalsBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SignalsBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/BronzeBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BronzeBucketFF082204"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/RawBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RawBucket0C3EE094"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/SilverBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SilverBucket424E65BD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/SignalsBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SignalsBucket6AABFCA4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in aws-cdk-lib...",
+        "/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:542 (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:5420)",
+        "Kernel._Kernel_ensureSync (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:69597)",
+        "Kernel.invoke (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:54153)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/Exports/Output{\"Ref\":\"BronzeBucketFF082204\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefBronzeBucketFF082204B6C0600A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in aws-cdk-lib...",
+        "/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:542 (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:5420)",
+        "Kernel._Kernel_ensureSync (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:69597)",
+        "Kernel.invoke (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:54153)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressIngestion/Exports/Output{\"Ref\":\"SignalsBucket6AABFCA4\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefSignalsBucket6AABFCA4A5CD7395"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in aws-cdk-lib...",
+        "/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:542 (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:5420)",
+        "Kernel._Kernel_ensureSync (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:69597)",
+        "Kernel.invoke (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:54153)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ]
+}

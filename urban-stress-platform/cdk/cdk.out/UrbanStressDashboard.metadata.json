@@ -1,0 +1,221 @@
+{
+  "/UrbanStressDashboard": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/DashboardLogGroup": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardLogGroup"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/AlbSg": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlbSg"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/TaskSg": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "TaskSg"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/DashboardAlb": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardAlb"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/DashboardTg": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardTg"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/DashboardListener": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardListener"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/DashboardCluster": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardCluster"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/DashboardTaskDef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardTaskDef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/DashboardService": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardService"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/DashboardUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/EcrRepoUri": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EcrRepoUri"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "Kernel._Kernel_create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:61100)",
+        "Kernel.create (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:51863)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/UrbanStressDashboard/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.synth in aws-cdk-lib...",
+        "/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:542 (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:5420)",
+        "Kernel._Kernel_ensureSync (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:69597)",
+        "Kernel.invoke (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:54153)",
+        "KernelHost.processRequest (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:212493)",
+        "KernelHost.run (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211548)",
+        "Immediate._onImmediate (/private/var/folders/0t/xzp_2hls0sqdtsykt13kntvm0000gn/T/tmpq3uhwxar/lib/program.js:1:211592)",
+        "...node internals..."
+      ]
+    }
+  ]
+}

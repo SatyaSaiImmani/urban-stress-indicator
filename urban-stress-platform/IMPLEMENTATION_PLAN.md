@@ -1,0 +1,548 @@
+# Urban Stress Intelligence Platform — Implementation Plan
+
+> **For Claude Code:** Work through each phase sequentially. Each task has explicit
+> acceptance criteria. Do not proceed to the next phase until all criteria in the
+> current phase pass. All infrastructure is AWS-native. All code targets Python 3.11+.
+
+---
+
+## Project structure (target)
+
+```
+urban-stress-platform/
+├── app.py                        # Streamlit dashboard (dummy data → real queries)
+├── requirements.txt
+├── .env.example
+├── cdk/                          # AWS CDK infrastructure (Python)
+│   ├── app.py
+│   └── stacks/
+│       ├── ingestion_stack.py
+│       ├── etl_stack.py
+│       ├── datamart_stack.py
+│       └── dashboard_stack.py
+├── lambdas/
+│   ├── collector_open311/
+│   │   └── handler.py
+│   ├── collector_noaa/
+│   │   └── handler.py
+│   ├── collector_gdelt/
+│   │   └── handler.py
+│   └── rds_loader/
+│       └── handler.py
+├── glue_jobs/
+│   ├── bronze_etl.py
+│   ├── silver_etl.py
+│   ├── signal_scoring.py
+│   └── composite_score.py
+├── sql/
+│   ├── schema.sql
+│   └── views/
+│       ├── signal_metrics.sql
+│       └── composite_scores.sql
+├── bedrock/
+│   └── verdict_prompt.py
+└── docs/
+    └── metrics.md                # Metric documentation (linked from dashboard i buttons)
+```
+
+---
+
+## Phase 1 — Project bootstrap & dummy dashboard validation
+
+### Task 1.1 — Python environment
+```
+pip install streamlit plotly pandas boto3 psycopg2-binary python-dotenv great-expectations
+```
+Create `requirements.txt` with pinned versions.
+
+### Task 1.2 — Run and validate dummy dashboard
+```bash
+streamlit run app.py
+```
+**Acceptance criteria:**
+- [ ] Dashboard loads without errors on `localhost:8501`
+- [ ] Title, updated status, readiness badge all render
+- [ ] Composite gauge displays with correct delta and colour band
+- [ ] LLM verdict box renders with human-layer notice
+- [ ] All 8 metric cards render with `i` icon and docs link
+- [ ] Month/year chart toggle switches all three charts
+- [ ] No layout overflow on 1280px viewport
+
+### Task 1.3 — `.env.example`
+```
+AWS_REGION=us-east-1
+S3_BUCKET_BRONZE=urban-stress-bronze
+S3_BUCKET_SILVER=urban-stress-silver
+S3_BUCKET_SIGNALS=urban-stress-signals
+RDS_HOST=
+RDS_PORT=5432
+RDS_DB=urban_stress
+RDS_USER=
+RDS_PASSWORD=
+OPEN311_API_BASE=https://api.city.gov/dev/v2
+OPEN311_JURISDICTION_ID=city.gov
+BEDROCK_MODEL_ID=anthropic.claude-3-sonnet-20240229-v1:0
+BEDROCK_REGION=us-east-1
+```
+
+---
+
+## Phase 2 — RDS schema & datamart layer
+
+### Task 2.1 — Create `sql/schema.sql`
+Define the following tables. Claude Code: write the full DDL.
+
+```sql
+-- Raw ingestion tracking
+CREATE TABLE pipeline_runs (
+  id              SERIAL PRIMARY KEY,
+  source          TEXT NOT NULL,          -- 'open311' | 'noaa' | 'gdelt'
+  run_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  status          TEXT NOT NULL,          -- 'success' | 'failed'
+  records_loaded  INT,
+  error_message   TEXT
+);
+
+-- Open311 silver layer (normalised from S3 silver/)
+CREATE TABLE requests_311 (
+  service_request_id  TEXT PRIMARY KEY,
+  service_code        TEXT,
+  service_name        TEXT,
+  status              TEXT,               -- 'open' | 'closed'
+  requested_datetime  TIMESTAMPTZ,
+  updated_datetime    TIMESTAMPTZ,
+  expected_datetime   TIMESTAMPTZ,
+  agency_responsible  TEXT,
+  zipcode             TEXT,
+  lat                 DOUBLE PRECISION,
+  lon                 DOUBLE PRECISION,
+  city_zone           TEXT,               -- derived from zipcode lookup
+  loaded_at           TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- NOAA daily summaries (normalised from S3 signals/)
+CREATE TABLE weather_daily (
+  station_id   TEXT,
+  obs_date     DATE,
+  tmax         NUMERIC(5,2),             -- °C
+  tmin         NUMERIC(5,2),
+  prcp         NUMERIC(7,2),             -- mm
+  awnd         NUMERIC(6,2),             -- m/s
+  PRIMARY KEY (station_id, obs_date)
+);
+
+-- GDELT GKG signal aggregates (daily city-level)
+CREATE TABLE gdelt_daily (
+  city          TEXT,
+  obs_date      DATE,
+  avg_tone      NUMERIC(6,3),            -- V1.5TONE.Tone 7d rolling avg
+  polarity      NUMERIC(6,4),            -- V1.5TONE.Polarity
+  protest_count INT,                     -- SUM V1COUNTS PROTEST
+  PRIMARY KEY (city, obs_date)
+);
+
+-- Computed signal scores (output of Glue signal_scoring.py)
+CREATE TABLE signal_scores (
+  city          TEXT,
+  score_date    DATE,
+  heat_score    NUMERIC(5,2),
+  infra_score   NUMERIC(5,2),
+  context_score NUMERIC(5,2),
+  composite     NUMERIC(5,2),
+  PRIMARY KEY (city, score_date)
+);
+
+-- Pre-computed metric cards (output of Glue composite_score.py)
+CREATE TABLE signal_metrics (
+  city          TEXT,
+  metric_date   DATE,
+  metric_name   TEXT,
+  value_num     NUMERIC,
+  value_text    TEXT,
+  delta_pct     NUMERIC(6,2),
+  baseline      NUMERIC,
+  PRIMARY KEY (city, metric_date, metric_name)
+);
+
+-- LLM verdicts (generated by Bedrock Lambda)
+CREATE TABLE verdicts (
+  city           TEXT,
+  verdict_date   DATE,
+  verdict_text   TEXT,
+  composite_score NUMERIC(5,2),
+  generated_at   TIMESTAMPTZ,
+  model_id       TEXT,
+  PRIMARY KEY (city, verdict_date)
+);
+```
+
+**Acceptance criteria:**
+- [ ] All tables create without error on a local PostgreSQL or RDS dev instance
+- [ ] Foreign key relationships are implicit (no hard FK constraints — ETL runs in parallel)
+- [ ] All date columns use `DATE` or `TIMESTAMPTZ` — never `VARCHAR` for dates
+
+### Task 2.2 — Create SQL views `sql/views/signal_metrics.sql`
+```sql
+-- View: today's metric card values (replaces METRICS dict in app.py)
+CREATE OR REPLACE VIEW v_signal_metrics_today AS
+SELECT
+  r.city_zone,
+  COUNT(*) FILTER (WHERE r.status = 'open')                       AS open_backlog,
+  ROUND(AVG(
+    EXTRACT(EPOCH FROM (r.updated_datetime - r.requested_datetime))/3600
+  ) FILTER (WHERE r.status = 'closed'), 1)                        AS mean_close_hrs,
+  MODE() WITHIN GROUP (ORDER BY r.service_name)                    AS top_category,
+  w.tmax,
+  w.prcp,
+  g.avg_tone,
+  g.protest_count
+FROM requests_311 r
+CROSS JOIN LATERAL (
+  SELECT tmax, prcp FROM weather_daily
+  WHERE obs_date = CURRENT_DATE - 1
+  ORDER BY station_id LIMIT 1
+) w
+CROSS JOIN LATERAL (
+  SELECT avg_tone, protest_count FROM gdelt_daily
+  WHERE city = 'Chicago' AND obs_date = CURRENT_DATE - 1
+) g
+WHERE DATE(r.requested_datetime) = CURRENT_DATE - 1
+GROUP BY r.city_zone, w.tmax, w.prcp, g.avg_tone, g.protest_count;
+```
+
+---
+
+## Phase 3 — Lambda collectors
+
+### Task 3.1 — Open311 collector (`lambdas/collector_open311/handler.py`)
+
+```python
+"""
+Fetches Open311 service requests and writes raw JSON to s3://bronze/open311/YYYY/MM/DD/.
+Triggered by EventBridge on a daily schedule (06:00 UTC).
+
+API: GET https://{OPEN311_API_BASE}/requests.json
+     ?jurisdiction_id={JURISDICTION_ID}
+     &start_date={yesterday}T00:00:00Z
+     &end_date={yesterday}T23:59:59Z
+     &status=all
+
+Write strategy: one S3 object per API page, named:
+  open311/{year}/{month}/{day}/page_{n:04d}.json
+"""
+```
+
+**Claude Code — implement this function with:**
+- Pagination loop (API returns max 1000 records; loop until empty response)
+- Exponential backoff on 429/500 errors (max 3 retries)
+- Write each page to S3 using `boto3.client('s3').put_object`
+- Log record count to `pipeline_runs` table via `psycopg2`
+- Environment variables: `OPEN311_API_BASE`, `OPEN311_JURISDICTION_ID`, `S3_BUCKET_BRONZE`, `RDS_HOST`, `RDS_PASSWORD`
+
+**Acceptance criteria:**
+- [ ] Successfully fetches at least one page from the Chicago Open311 sandbox
+- [ ] Writes valid JSON to S3 bronze path
+- [ ] Handles empty response (no requests on that date) without error
+- [ ] Logs run to `pipeline_runs` with `status='success'` or `status='failed'`
+
+### Task 3.2 — NOAA collector (`lambdas/collector_noaa/handler.py`)
+
+```python
+"""
+Fetches NOAA daily summaries for the city bounding box and writes to s3://bronze/noaa/.
+
+API: GET https://www.ncei.noaa.gov/access/services/data/v1
+     ?dataset=daily-summaries
+     &dataTypes=TMAX,TMIN,PRCP,AWND
+     &bbox={CITY_BBOX}
+     &startDate={yesterday}
+     &endDate={yesterday}
+     &units=metric
+     &format=json
+     &includeStationName=true
+
+CITY_BBOX for Chicago: 42.023,-87.940,41.644,-87.524
+"""
+```
+
+**Acceptance criteria:**
+- [ ] Returns at least one station's data for yesterday
+- [ ] Writes JSON to `s3://bronze/noaa/YYYY/MM/DD/raw.json`
+- [ ] Handles 400 (bad date) and 500 errors with SQS DLQ message
+
+### Task 3.3 — GDELT collector (`lambdas/collector_gdelt/handler.py`)
+
+```python
+"""
+Downloads the GDELT GKG 2.1 15-minute export files for yesterday,
+filters rows where V2ENHANCEDLOCATIONS contains the target city,
+and writes filtered TSV to s3://bronze/gdelt/YYYY/MM/DD/.
+
+GDELT master file list: http://data.gdeltproject.org/gdeltv2/lastupdate.txt
+GKG file format: tab-delimited, fields per GDELT GKG v2.1 codebook.
+
+Extract fields:
+  col 1:  GKGRECORDID
+  col 2:  V2.1DATE        → parse first 8 chars as YYYYMMDD
+  col 10: V1.5TONE        → split comma-delimited, index 0 = Tone, index 3 = Polarity
+  col 11: V2ENHANCEDLOCATIONS → filter rows where FullName contains city name
+  col 27: V1COUNTS        → filter for CountType='PROTEST'
+
+Write one filtered TSV per source file, named:
+  gdelt/{year}/{month}/{day}/{original_filename}
+"""
+```
+
+**Acceptance criteria:**
+- [ ] Downloads at least one GKG file from yesterday's GDELT export
+- [ ] Filters to rows mentioning the target city only
+- [ ] Correctly parses `V1.5TONE` into Tone and Polarity floats
+- [ ] Writes filtered rows to S3 bronze
+
+---
+
+## Phase 4 — Glue ETL jobs
+
+### Task 4.1 — Bronze ETL (`glue_jobs/bronze_etl.py`)
+
+**Input:**  `s3://bronze/open311/YYYY/MM/DD/*.json`
+**Output:** `s3://raw/open311/year=YYYY/month=MM/day=DD/` (Parquet)
+
+Transform rules:
+- Parse `requested_datetime` and `updated_datetime` to ISO 8601 UTC
+- Cast `lat` and `long` to DOUBLE
+- Normalise `status` to lowercase
+- Drop rows where `service_request_id` is null
+- Add `loaded_at` = current timestamp
+
+**Acceptance criteria:**
+- [ ] Output Parquet passes `great_expectations` schema check (all required columns present, correct types)
+- [ ] Zero null `service_request_id` values in output
+- [ ] Partitioned correctly by year/month/day
+
+### Task 4.2 — Silver ETL (`glue_jobs/silver_etl.py`)
+
+**Input:**  `s3://raw/open311/` (Parquet)
+**Output:** `s3://silver/open311/` (Parquet, deduplicated)
+
+Transform rules:
+- Deduplicate on `service_request_id` keeping latest `updated_datetime`
+- Derive `city_zone` by spatial join of `lat`/`long` to zipcode polygon (use shapefile in S3)
+- Add `resolution_hrs` = `(updated_datetime - requested_datetime)` in hours, null if not closed
+
+**Acceptance criteria:**
+- [ ] No duplicate `service_request_id` in output
+- [ ] `city_zone` populated for ≥ 95% of rows with valid lat/long
+- [ ] `resolution_hrs` is null iff `status = 'open'`
+
+### Task 4.3 — Signal scoring (`glue_jobs/signal_scoring.py`)
+
+**Input:**  Silver 311, NOAA bronze JSON, GDELT bronze TSV
+**Output:** `s3://signals/scores/date=YYYY-MM-DD/scores.parquet`
+            + upsert into `signal_scores` RDS table
+
+Scoring formulas (from agreed design):
+```python
+# 311 anomaly score (0–100)
+anomaly = min(100, max(0, ((vol_today - baseline_30d) / baseline_30d) * 80 + 50))
+
+# Heat score (0–100)
+heat = min(100, max(0, (tmax - 5) / 35 * 100))
+
+# Context score (0–100) — media tone only, situational
+context = min(100, max(0, abs(tone) / 8 * 100))
+
+# Composite
+composite = round(anomaly * 0.40 + heat * 0.35 + context * 0.25, 2)
+```
+
+**Acceptance criteria:**
+- [ ] All sub-scores are in [0, 100]
+- [ ] Composite = 49 when all inputs are at historical average (regression test)
+- [ ] Upsert is idempotent — running twice on same date produces same result
+
+### Task 4.4 — Composite loader (`glue_jobs/composite_score.py`)
+
+**Input:**  `signal_scores` RDS table + `requests_311` RDS table + `weather_daily` + `gdelt_daily`
+**Output:** Upsert into `signal_metrics` RDS table (all metric card values)
+
+This job pre-computes every value that `app.py` currently reads from the `METRICS` dict.
+
+---
+
+## Phase 5 — Bedrock verdict generation
+
+### Task 5.1 — Verdict Lambda (`lambdas/rds_loader/handler.py`)
+
+```python
+"""
+Reads today's signal_scores and signal_metrics from RDS.
+Constructs a structured prompt.
+Calls Amazon Bedrock claude-3-sonnet.
+Writes verdict to verdicts table.
+Caches result in ElastiCache Redis (TTL = 3600s).
+
+Prompt template (do not change wording — operator-facing):
+──────────────────────────────────────────────────────────────
+You are an urban operations analyst. Summarise today's urban
+stress conditions for {city} in 3–4 sentences.
+
+Use only the data provided below. Do not predict future events.
+Do not recommend specific actions. Describe what is happening,
+which signal is the primary driver, and note any signals that
+are within normal range.
+
+End every summary with: "Operator judgment required before
+adjusting staffing or resource positioning."
+
+Today's data:
+- Composite stress index: {composite}/100 (baseline: {baseline}, delta: {delta:+})
+- 311 open backlog: {open_backlog} requests ({backlog_delta:+.0f}% vs 30d avg)
+- Top 311 category today: {top_category} ({top_cat_delta:+.0f}% vs 30d avg)
+- TMAX today: {tmax}°C (baseline: {tmax_baseline}°C, streak: {streak} days ≥ 35°C)
+- Precipitation last 72 hrs: {prcp} mm
+- Media tone (7d avg): {tone} (baseline: {tone_baseline})
+- Protest mentions this week: {protest_count} (baseline: {protest_baseline})
+
+Readiness mode: {readiness_mode}
+──────────────────────────────────────────────────────────────
+"""
+```
+
+**Acceptance criteria:**
+- [ ] Verdict is between 3 and 6 sentences
+- [ ] Contains the phrase "Operator judgment required"
+- [ ] Does not contain the words "predict", "will", "expect to", or "forecast"
+- [ ] Written to `verdicts` table with correct `verdict_date`
+- [ ] Redis cache hit on second call within TTL window
+
+---
+
+## Phase 6 — Connect app.py to real data
+
+### Task 6.1 — Replace dummy data with RDS queries
+
+In `app.py`, replace each `DUMMY DATA` block with a function that queries the
+appropriate RDS view or table.
+
+```python
+# Pattern for every data fetch — use this exactly:
+import psycopg2, os
+from functools import lru_cache
+
+@st.cache_data(ttl=3600)
+def fetch_composite_today(city: str) -> dict:
+    """Replace: COMPOSITE_SCORE, COMPOSITE_BASELINE, COMPOSITE_DELTA, READINESS_MODE"""
+    conn = psycopg2.connect(
+        host=os.environ["RDS_HOST"], port=os.environ["RDS_PORT"],
+        dbname=os.environ["RDS_DB"], user=os.environ["RDS_USER"],
+        password=os.environ["RDS_PASSWORD"]
+    )
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT composite, comp_base_30d,
+                   composite - comp_base_30d AS delta,
+                   CASE
+                     WHEN composite - comp_base_30d < 10 THEN 'Normal'
+                     WHEN composite - comp_base_30d < 25 THEN 'Elevated'
+                     ELSE 'High'
+                   END AS readiness_mode
+            FROM signal_scores
+            WHERE city = %s AND score_date = CURRENT_DATE - 1
+        """, (city,))
+        row = cur.fetchone()
+    conn.close()
+    return {"score": row[0], "baseline": row[1], "delta": row[2], "mode": row[3]}
+```
+
+Write equivalent functions for:
+- `fetch_verdict_today(city)` → reads `verdicts` table
+- `fetch_metrics_today(city)` → reads `signal_metrics` table → returns dict matching `METRICS` structure
+- `fetch_history_month(city)` → reads `signal_scores` last 30 days
+- `fetch_history_year(city)` → reads `signal_scores` last 12 months grouped by month
+
+**Acceptance criteria:**
+- [ ] Dashboard renders identically to dummy-data version when RDS has data for yesterday
+- [ ] Falls back gracefully to a "No data available" message when RDS has no rows
+- [ ] All `@st.cache_data(ttl=3600)` decorators in place — no query runs more than once per hour per session
+
+---
+
+## Phase 7 — Streamlit deployment on ECS Fargate
+
+### Task 7.1 — Dockerfile
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+COPY docs/ docs/
+EXPOSE 8501
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
+ENTRYPOINT ["streamlit", "run", "app.py",
+            "--server.port=8501",
+            "--server.address=0.0.0.0",
+            "--server.headless=true"]
+```
+
+### Task 7.2 — CDK dashboard stack (`cdk/stacks/dashboard_stack.py`)
+Define:
+- ECR repository
+- ECS Fargate service (0.5 vCPU, 1 GB memory)
+- ALB with HTTPS listener (ACM certificate)
+- Task role with permission to call Bedrock and read from RDS Proxy
+- Secrets Manager secret for RDS credentials (injected as env vars)
+
+**Acceptance criteria:**
+- [ ] `cdk deploy DashboardStack` completes without errors
+- [ ] Dashboard accessible at ALB DNS over HTTPS
+- [ ] `/health` path returns 200
+
+---
+
+## Phase 8 — Observability & hardening
+
+### Task 8.1 — CloudWatch alarms
+Create alarms for:
+- Lambda collector: error rate > 0 for 2 consecutive runs → SNS email
+- Glue job: any job status = `FAILED` → SNS email
+- RDS: `DatabaseConnections` > 80 → SNS email
+- Composite score: daily score not written by 07:00 UTC → SNS email
+
+### Task 8.2 — Cost controls
+- S3 Intelligent-Tiering lifecycle policy on `bronze/` and `raw/` (transition after 30 days)
+- AWS Budgets alert at $50/month
+- Glue job bookmarks enabled on all jobs (skip already-processed partitions)
+
+### Task 8.3 — CDK IaC finalisation
+- All resources in Phases 1–7 codified in CDK stacks
+- `cdk destroy` removes all resources cleanly
+- `README.md` with: prerequisites, `cdk bootstrap`, `cdk deploy --all`, teardown steps
+
+---
+
+## Dummy data → real data replacement checklist
+
+When each datamart table has data, replace the corresponding `app.py` block:
+
+| `app.py` variable | Replace with | Source table |
+|---|---|---|
+| `LAST_UPDATED`, `DATA_AS_OF` | `fetch_pipeline_status()` | `pipeline_runs` |
+| `COMPOSITE_SCORE`, `COMPOSITE_BASELINE`, `COMPOSITE_DELTA`, `READINESS_MODE` | `fetch_composite_today()` | `signal_scores` |
+| `LLM_VERDICT`, `LLM_GENERATED_AT` | `fetch_verdict_today()` | `verdicts` |
+| `METRICS` dict | `fetch_metrics_today()` | `signal_metrics` |
+| `MONTH_DATA` DataFrame | `fetch_history_month()` | `signal_scores` (last 30 days) |
+| `YEAR_DATA` DataFrame | `fetch_history_year()` | `signal_scores` (group by month) |
+
+---
+
+## Definition of done
+
+The project is complete when:
+1. `streamlit run app.py` shows live data from RDS updated daily
+2. All six Lambda collectors run on schedule without manual intervention
+3. All Glue jobs complete in the Step Functions chain within 45 minutes of ingestion
+4. Bedrock verdict is generated daily and appears on the dashboard
+5. `cdk deploy --all` from a clean account recreates the full stack
+6. No manual steps required after initial `cdk bootstrap`

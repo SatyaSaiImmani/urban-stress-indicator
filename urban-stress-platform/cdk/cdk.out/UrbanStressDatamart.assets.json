@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "5474fcac7a2d314273f132a3c6db548f19000dd42c26e9ea5f737e2ea4ef47d1": {
+      "displayName": "UrbanStressDatamart Template",
+      "source": {
+        "path": "UrbanStressDatamart.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "677542194461-us-east-1-ecaf2680": {
+          "bucketName": "cdk-hnb659fds-assets-677542194461-us-east-1",
+          "objectKey": "5474fcac7a2d314273f132a3c6db548f19000dd42c26e9ea5f737e2ea4ef47d1.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:aws:iam::677542194461:role/LabRole"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

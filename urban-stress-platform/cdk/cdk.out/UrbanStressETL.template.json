@@ -1,0 +1,451 @@
+{
+ "Resources": {
+  "BronzeETL": {
+   "Type": "AWS::Glue::Job",
+   "Properties": {
+    "Command": {
+     "Name": "pythonshell",
+     "PythonVersion": "3.9",
+     "ScriptLocation": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/bronze_etl.py"
+       ]
+      ]
+     }
+    },
+    "DefaultArguments": {
+     "--DB_SECRET_ARN": "urban-stress/db-credentials",
+     "--BRONZE_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+     },
+     "--SIGNALS_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefSignalsBucket6AABFCA4A5CD7395"
+     },
+     "--enable-job-bookmarks": "enable",
+     "--additional-python-modules": "psycopg2-binary",
+     "--extra-py-files": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/glue_db.py"
+       ]
+      ]
+     }
+    },
+    "GlueVersion": "2.0",
+    "MaxCapacity": 0.0625,
+    "Name": "urban-stress-bronzeetl",
+    "Role": "arn:aws:iam::677542194461:role/LabRole",
+    "Timeout": 60
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/BronzeETL"
+   }
+  },
+  "SilverETL": {
+   "Type": "AWS::Glue::Job",
+   "Properties": {
+    "Command": {
+     "Name": "pythonshell",
+     "PythonVersion": "3.9",
+     "ScriptLocation": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/silver_etl.py"
+       ]
+      ]
+     }
+    },
+    "DefaultArguments": {
+     "--DB_SECRET_ARN": "urban-stress/db-credentials",
+     "--BRONZE_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+     },
+     "--SIGNALS_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefSignalsBucket6AABFCA4A5CD7395"
+     },
+     "--enable-job-bookmarks": "enable",
+     "--additional-python-modules": "psycopg2-binary",
+     "--extra-py-files": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/glue_db.py"
+       ]
+      ]
+     }
+    },
+    "GlueVersion": "2.0",
+    "MaxCapacity": 0.0625,
+    "Name": "urban-stress-silveretl",
+    "Role": "arn:aws:iam::677542194461:role/LabRole",
+    "Timeout": 60
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/SilverETL"
+   }
+  },
+  "SignalScore": {
+   "Type": "AWS::Glue::Job",
+   "Properties": {
+    "Command": {
+     "Name": "pythonshell",
+     "PythonVersion": "3.9",
+     "ScriptLocation": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/signal_scoring.py"
+       ]
+      ]
+     }
+    },
+    "DefaultArguments": {
+     "--DB_SECRET_ARN": "urban-stress/db-credentials",
+     "--BRONZE_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+     },
+     "--SIGNALS_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefSignalsBucket6AABFCA4A5CD7395"
+     },
+     "--enable-job-bookmarks": "enable",
+     "--additional-python-modules": "psycopg2-binary",
+     "--extra-py-files": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/glue_db.py"
+       ]
+      ]
+     }
+    },
+    "GlueVersion": "2.0",
+    "MaxCapacity": 0.0625,
+    "Name": "urban-stress-signalscore",
+    "Role": "arn:aws:iam::677542194461:role/LabRole",
+    "Timeout": 60
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/SignalScore"
+   }
+  },
+  "CompositeScore": {
+   "Type": "AWS::Glue::Job",
+   "Properties": {
+    "Command": {
+     "Name": "pythonshell",
+     "PythonVersion": "3.9",
+     "ScriptLocation": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/composite_score.py"
+       ]
+      ]
+     }
+    },
+    "DefaultArguments": {
+     "--DB_SECRET_ARN": "urban-stress/db-credentials",
+     "--BRONZE_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+     },
+     "--SIGNALS_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefSignalsBucket6AABFCA4A5CD7395"
+     },
+     "--enable-job-bookmarks": "enable",
+     "--additional-python-modules": "psycopg2-binary",
+     "--extra-py-files": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/glue_db.py"
+       ]
+      ]
+     }
+    },
+    "GlueVersion": "2.0",
+    "MaxCapacity": 0.0625,
+    "Name": "urban-stress-compositescore",
+    "Role": "arn:aws:iam::677542194461:role/LabRole",
+    "Timeout": 60
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/CompositeScore"
+   }
+  },
+  "GdeltCollector": {
+   "Type": "AWS::Glue::Job",
+   "Properties": {
+    "Command": {
+     "Name": "pythonshell",
+     "PythonVersion": "3.9",
+     "ScriptLocation": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/collector_gdelt.py"
+       ]
+      ]
+     }
+    },
+    "DefaultArguments": {
+     "--DB_SECRET_ARN": "urban-stress/db-credentials",
+     "--BRONZE_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+     },
+     "--SIGNALS_BUCKET": {
+      "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefSignalsBucket6AABFCA4A5CD7395"
+     },
+     "--enable-job-bookmarks": "enable",
+     "--additional-python-modules": "psycopg2-binary",
+     "--extra-py-files": {
+      "Fn::Join": [
+       "",
+       [
+        "s3://",
+        {
+         "Fn::ImportValue": "UrbanStressIngestion:ExportsOutputRefBronzeBucketFF082204B6C0600A"
+        },
+        "/glue-scripts/glue_db.py"
+       ]
+      ]
+     }
+    },
+    "GlueVersion": "2.0",
+    "MaxCapacity": 0.0625,
+    "Name": "urban-stress-gdeltcollector",
+    "Role": "arn:aws:iam::677542194461:role/LabRole",
+    "Timeout": 60
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/GdeltCollector"
+   }
+  },
+  "ETLPipeline": {
+   "Type": "AWS::StepFunctions::StateMachine",
+   "Properties": {
+    "DefinitionString": "{\"Comment\": \"Urban Stress ETL Pipeline\", \"StartAt\": \"RunBronzeETL\", \"States\": {\"RunBronzeETL\": {\"Type\": \"Task\", \"Resource\": \"arn:aws:states:::glue:startJobRun.sync\", \"Parameters\": {\"JobName\": \"urban-stress-bronzeetl\"}, \"ResultPath\": null, \"Next\": \"RunSilverETL\"}, \"RunSilverETL\": {\"Type\": \"Task\", \"Resource\": \"arn:aws:states:::glue:startJobRun.sync\", \"Parameters\": {\"JobName\": \"urban-stress-silveretl\"}, \"ResultPath\": null, \"Next\": \"RunSignalScoring\"}, \"RunSignalScoring\": {\"Type\": \"Task\", \"Resource\": \"arn:aws:states:::glue:startJobRun.sync\", \"Parameters\": {\"JobName\": \"urban-stress-signalscore\"}, \"ResultPath\": null, \"Next\": \"RunCompositeScore\"}, \"RunCompositeScore\": {\"Type\": \"Task\", \"Resource\": \"arn:aws:states:::glue:startJobRun.sync\", \"Parameters\": {\"JobName\": \"urban-stress-compositescore\"}, \"ResultPath\": null, \"Next\": \"RunGdeltCollector\"}, \"RunGdeltCollector\": {\"Type\": \"Task\", \"Resource\": \"arn:aws:states:::glue:startJobRun.sync\", \"Parameters\": {\"JobName\": \"urban-stress-gdeltcollector\"}, \"ResultPath\": null, \"End\": true}}}",
+    "RoleArn": "arn:aws:iam::677542194461:role/LabRole",
+    "StateMachineName": "urban-stress-etl-pipeline"
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/ETLPipeline"
+   }
+  },
+  "LogRun": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "urban-stress-artifacts-677542194461",
+     "S3Key": "lambdas/log_run.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DB_HOST": {
+       "Fn::ImportValue": "UrbanStressDatamart:ExportsOutputFnGetAttUrbanStressDb57C845BCEndpointAddress5247EDA7"
+      },
+      "DB_NAME": "postgres",
+      "DB_PORT": "5432",
+      "DB_SECRET_ARN": {
+       "Fn::ImportValue": "UrbanStressDatamart:ExportsOutputRefDbSecret685A0FA57881E1C6"
+      }
+     }
+    },
+    "FunctionName": "urban-stress-log-run",
+    "Handler": "handler.handler",
+    "MemorySize": 128,
+    "Role": "arn:aws:iam::677542194461:role/LabRole",
+    "Runtime": "python3.11",
+    "Timeout": 30
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/LogRun"
+   }
+  },
+  "PipelineStateChangeRule": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "EventPattern": {
+     "source": [
+      "aws.states"
+     ],
+     "detail-type": [
+      "Step Functions Execution Status Change"
+     ],
+     "detail": {
+      "stateMachineArn": [
+       "arn:aws:states:us-east-1:677542194461:stateMachine:urban-stress-etl-pipeline"
+      ],
+      "status": [
+       "SUCCEEDED",
+       "FAILED",
+       "TIMED_OUT",
+       "ABORTED"
+      ]
+     }
+    },
+    "Name": "urban-stress-pipeline-state-change",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": "arn:aws:lambda:us-east-1:677542194461:function:urban-stress-log-run",
+      "Id": "LogPipelineRun"
+     }
+    ]
+   },
+   "DependsOn": [
+    "ETLPipeline",
+    "LogRun"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/PipelineStateChangeRule"
+   }
+  },
+  "LogRunEventPermission": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": "urban-stress-log-run",
+    "Principal": "events.amazonaws.com",
+    "SourceArn": "arn:aws:events:us-east-1:677542194461:rule/urban-stress-pipeline-state-change"
+   },
+   "DependsOn": [
+    "LogRun",
+    "PipelineStateChangeRule"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/LogRunEventPermission"
+   }
+  },
+  "ETLFailedAlarm": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmDescription": "One or more urban-stress-etl-pipeline executions failed. Check Step Functions console for the failing Glue job.",
+    "AlarmName": "urban-stress-etl-pipeline-failed",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "StateMachineArn",
+      "Value": "arn:aws:states:us-east-1:677542194461:stateMachine:urban-stress-etl-pipeline"
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ExecutionsFailed",
+    "Namespace": "AWS/States",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/ETLFailedAlarm"
+   }
+  },
+  "ETLTimedOutAlarm": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmDescription": "urban-stress-etl-pipeline execution timed out.",
+    "AlarmName": "urban-stress-etl-pipeline-timed-out",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "StateMachineArn",
+      "Value": "arn:aws:states:us-east-1:677542194461:stateMachine:urban-stress-etl-pipeline"
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ExecutionsTimedOut",
+    "Namespace": "AWS/States",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/ETLTimedOutAlarm"
+   }
+  },
+  "ETLDailySchedule": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "Name": "urban-stress-etl-daily",
+    "ScheduleExpression": "cron(0 7 * * ? *)",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": "arn:aws:states:us-east-1:677542194461:stateMachine:urban-stress-etl-pipeline",
+      "Id": "StartETLPipeline",
+      "RoleArn": "arn:aws:iam::677542194461:role/LabRole"
+     }
+    ]
+   },
+   "DependsOn": [
+    "ETLPipeline"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/ETLDailySchedule"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/y2LXQ6CMBCEz8L7sgqGAxgTH0wMBA9gSlmk0h9CtxJDuLtFfZqZL9/kmBcZ7hMx+1S2Q6pVg8uNhRwgovvy0IHw1NmLa8AzjV2wkpWzfoPRY7oK2StLoIVpWoFL5Oe/BLFXNBnlfVwr0Issf5910ARSu9DOgmW/oaMWk1m3Sxl4DLxC9ebe2d0BswyL5OmVSqdgWRnC+pcfvZPlcb4AAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "UrbanStressETL/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "StateMachineArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ETLPipeline",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "UrbanStress-StateMachineArn"
+   }
+  }
+ }
+}
