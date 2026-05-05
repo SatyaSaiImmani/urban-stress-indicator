@@ -4,15 +4,12 @@ from datetime import date, timedelta
 
 from glue_db import get_connection, upsert  # injected via --extra-py-files
 
-# Optional --TARGET_DATE=YYYY-MM-DD; defaults to yesterday
-_argv_map = {}
-for _token in sys.argv:
-    if _token.startswith("--") and "=" in _token:
-        _k, _v = _token[2:].split("=", 1)
-        _argv_map[_k] = _v
-
-_target = _argv_map.get("TARGET_DATE")
-obs_date = date.fromisoformat(_target) if _target else date.today() - timedelta(days=1)
+try:
+    from awsglue.utils import getResolvedOptions
+    _args = getResolvedOptions(sys.argv, ["TARGET_DATE"])
+    obs_date = date.fromisoformat(_args["TARGET_DATE"])
+except Exception:
+    obs_date = date.today() - timedelta(days=1)
 
 def run_composite_score(conn, obs_date: date):
     print(f"Running composite score (metric cards) for {obs_date}")
@@ -20,7 +17,7 @@ def run_composite_score(conn, obs_date: date):
     rows = []
 
     # 1. 311 open backlog
-    df = pd.read_sql("SELECT COUNT(*) as cnt FROM requests_311 WHERE status = 'open'", conn)
+    df = pd.read_sql("SELECT COUNT(*) as cnt FROM requests_311 WHERE status = 'open' AND DATE(requested_datetime) <= %s", conn, params=[str(obs_date)])
     baseline = pd.read_sql(
         "SELECT AVG(value_num) as b FROM signal_metrics WHERE metric_name = 'open_backlog' AND city = 'Boston'", conn
     )
@@ -83,7 +80,7 @@ def run_composite_score(conn, obs_date: date):
 
     # 5. Heat day streak
     df = pd.read_sql(
-        "SELECT obs_date, heat_index_max, tmax FROM weather_daily ORDER BY obs_date DESC", conn
+        "SELECT obs_date, heat_index_max, tmax FROM weather_daily WHERE obs_date <= %s ORDER BY obs_date DESC", conn, params=[str(obs_date)]
     )
     streak = 0
     for _, row in df.iterrows():

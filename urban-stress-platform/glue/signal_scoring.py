@@ -4,15 +4,15 @@ from datetime import date, timedelta
 
 from glue_db import get_connection, upsert  # injected via --extra-py-files
 
-# Optional --TARGET_DATE=YYYY-MM-DD; defaults to yesterday
-_argv_map = {}
-for _token in sys.argv:
-    if _token.startswith("--") and "=" in _token:
-        _k, _v = _token[2:].split("=", 1)
-        _argv_map[_k] = _v
-
-_target = _argv_map.get("TARGET_DATE")
-obs_date = date.fromisoformat(_target) if _target else date.today() - timedelta(days=1)
+# Parse TARGET_DATE via getResolvedOptions (official Glue API — handles both
+# default job args and per-run override args correctly).
+# Falls back to yesterday if not provided (normal daily run).
+try:
+    from awsglue.utils import getResolvedOptions
+    _args = getResolvedOptions(sys.argv, ["TARGET_DATE"])
+    obs_date = date.fromisoformat(_args["TARGET_DATE"])
+except Exception:
+    obs_date = date.today() - timedelta(days=1)
 
 SEVERITY  = {"Extreme": 4, "Severe": 3, "Moderate": 2, "Minor": 1, "Unknown": 0}
 URGENCY   = {"Immediate": 3, "Expected": 2, "Future": 1, "Past": 0, "Unknown": 0}
@@ -112,10 +112,10 @@ def run_signal_scoring(conn, obs_date: date):
         2
     )
 
-    # 30-day baseline composite
+    # 30-day baseline composite — only rows BEFORE obs_date to avoid forward-leak
     df_hist = pd.read_sql(
-        "SELECT composite FROM signal_scores WHERE city = 'Boston' ORDER BY score_date DESC LIMIT 30",
-        conn
+        "SELECT composite FROM signal_scores WHERE city = 'Boston' AND score_date < %s ORDER BY score_date DESC LIMIT 30",
+        conn, params=[str(obs_date)]
     )
     baseline_30d = round(float(df_hist["composite"].mean()), 2) if not df_hist.empty else composite
 

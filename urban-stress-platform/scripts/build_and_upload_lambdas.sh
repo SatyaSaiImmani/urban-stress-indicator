@@ -5,9 +5,9 @@
 # Run from the project root: bash scripts/build_and_upload_lambdas.sh
 set -euo pipefail
 
-ACCOUNT="677542194461"
+ACCOUNT="836734770581"
 REGION="us-east-1"
-ARTIFACTS_BUCKET="urban-stress-artifacts-${ACCOUNT}"
+ARTIFACTS_BUCKET="urban-stress-data-${ACCOUNT}"   # single bucket in new stack
 BUILD_DIR="/tmp/urban-stress-lambda-build"
 
 echo "=== Creating artifacts bucket (if not exists) ==="
@@ -34,12 +34,12 @@ build_lambda() {
   # Install deps inside the official Lambda python3.11 image (linux/amd64)
   if [ -f "${DEST}/requirements.txt" ]; then
     # Use the exact Lambda runtime image with entrypoint cleared.
-    # This guarantees binary compatibility (same glibc, same Python build).
+    # Install gcc first so packages like numpy that need a C compiler can build.
     docker run --rm --platform linux/amd64 \
       --entrypoint "" \
       -v "${DEST}:/pkg" \
       public.ecr.aws/lambda/python:3.11 \
-      /bin/bash -c "pip install -r /pkg/requirements.txt --target /pkg --quiet"
+      /bin/bash -c "pip install -r /pkg/requirements.txt --target /pkg --quiet --only-binary=:all:"
   fi
 
   # Zip the package
@@ -66,14 +66,13 @@ build_lambda "log_run"
 # Must be re-uploaded after any edit; CDK deploy only updates the job
 # definition, not the script content in S3.
 echo ""
-echo "=== Uploading Glue scripts to s3://urban-stress-bronze-${ACCOUNT}/glue-scripts/ ==="
-BRONZE_BUCKET="urban-stress-bronze-${ACCOUNT}"
+echo "=== Uploading Glue scripts to s3://${ARTIFACTS_BUCKET}/glue-scripts/ ==="
 for script in glue/*.py; do
-  aws s3 cp "$script" "s3://${BRONZE_BUCKET}/glue-scripts/" --region "$REGION"
+  aws s3 cp "$script" "s3://${ARTIFACTS_BUCKET}/glue-scripts/" --region "$REGION"
   echo "    Uploaded $script"
 done
 
 echo ""
 echo "=== Done. ==="
 echo "  Lambda zips : s3://${ARTIFACTS_BUCKET}/lambdas/"
-echo "  Glue scripts: s3://${BRONZE_BUCKET}/glue-scripts/"
+echo "  Glue scripts: s3://${ARTIFACTS_BUCKET}/glue-scripts/"

@@ -1,0 +1,32 @@
+# CDK build output — causes recursive copy loop without this
+cdk/cdk.out/
+cdk/.venv/
+
+# Python
+venv/
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Dev / local only
+.env
+.git/
+.gitignore
+*.md
+*.sh
+
+# Scripts and infra — not needed in the container
+scripts/
+lambdas/
+glue/
+sql/
+bedrock/
+cdk/
+
+# Misc
+.DS_Store
+*.log

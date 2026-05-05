@@ -1,149 +1,40 @@
 {
   "version": "53.0.0",
   "artifacts": {
-    "UrbanStressDatamart.assets": {
+    "UrbanStressDemo.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "UrbanStressDatamart.assets.json",
+        "file": "UrbanStressDemo.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "UrbanStressDatamart": {
+    "UrbanStressDemo": {
       "type": "aws:cloudformation:stack",
-      "environment": "aws://677542194461/us-east-1",
+      "environment": "aws://836734770581/us-east-1",
       "properties": {
-        "templateFile": "UrbanStressDatamart.template.json",
+        "templateFile": "UrbanStressDemo.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
-        "assumeRoleArn": "arn:aws:iam::677542194461:role/LabRole",
-        "cloudFormationExecutionRoleArn": "arn:aws:iam::677542194461:role/LabRole",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-677542194461-us-east-1/5474fcac7a2d314273f132a3c6db548f19000dd42c26e9ea5f737e2ea4ef47d1.json",
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::836734770581:role/cdk-hnb659fds-deploy-role-836734770581-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::836734770581:role/cdk-hnb659fds-cfn-exec-role-836734770581-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-836734770581-us-east-1/3dc01a4254c3e07bb3fe748f3ae66d0e0dc22f2e3a4023cc3763c6a4aff8cbef.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "UrbanStressDatamart.assets"
+          "UrbanStressDemo.assets"
         ],
         "lookupRole": {
-          "arn": "arn:aws:iam::677542194461:role/LabRole",
+          "arn": "arn:${AWS::Partition}:iam::836734770581:role/cdk-hnb659fds-lookup-role-836734770581-us-east-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         }
       },
       "dependencies": [
-        "UrbanStressDatamart.assets"
+        "UrbanStressDemo.assets"
       ],
-      "additionalMetadataFile": "UrbanStressDatamart.metadata.json",
-      "displayName": "UrbanStressDatamart"
-    },
-    "UrbanStressIngestion.assets": {
-      "type": "cdk:asset-manifest",
-      "properties": {
-        "file": "UrbanStressIngestion.assets.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-      }
-    },
-    "UrbanStressIngestion": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://677542194461/us-east-1",
-      "properties": {
-        "templateFile": "UrbanStressIngestion.template.json",
-        "terminationProtection": false,
-        "validateOnSynth": false,
-        "assumeRoleArn": "arn:aws:iam::677542194461:role/LabRole",
-        "cloudFormationExecutionRoleArn": "arn:aws:iam::677542194461:role/LabRole",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-677542194461-us-east-1/a7c06b562580b1e80d05e79211e20434f1a5867c7ca266dc35261c4c96e28e28.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
-        "additionalDependencies": [
-          "UrbanStressIngestion.assets"
-        ],
-        "lookupRole": {
-          "arn": "arn:aws:iam::677542194461:role/LabRole",
-          "requiresBootstrapStackVersion": 8,
-          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
-      },
-      "dependencies": [
-        "UrbanStressDatamart",
-        "UrbanStressIngestion.assets"
-      ],
-      "additionalMetadataFile": "UrbanStressIngestion.metadata.json",
-      "displayName": "UrbanStressIngestion"
-    },
-    "UrbanStressETL.assets": {
-      "type": "cdk:asset-manifest",
-      "properties": {
-        "file": "UrbanStressETL.assets.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-      }
-    },
-    "UrbanStressETL": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://677542194461/us-east-1",
-      "properties": {
-        "templateFile": "UrbanStressETL.template.json",
-        "terminationProtection": false,
-        "validateOnSynth": false,
-        "assumeRoleArn": "arn:aws:iam::677542194461:role/LabRole",
-        "cloudFormationExecutionRoleArn": "arn:aws:iam::677542194461:role/LabRole",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-677542194461-us-east-1/782932eacaea8e3bc75e0d218fba0499502653e5ae6c9b83cb60116f3b210143.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
-        "additionalDependencies": [
-          "UrbanStressETL.assets"
-        ],
-        "lookupRole": {
-          "arn": "arn:aws:iam::677542194461:role/LabRole",
-          "requiresBootstrapStackVersion": 8,
-          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
-      },
-      "dependencies": [
-        "UrbanStressIngestion",
-        "UrbanStressDatamart",
-        "UrbanStressETL.assets"
-      ],
-      "additionalMetadataFile": "UrbanStressETL.metadata.json",
-      "displayName": "UrbanStressETL"
-    },
-    "UrbanStressDashboard.assets": {
-      "type": "cdk:asset-manifest",
-      "properties": {
-        "file": "UrbanStressDashboard.assets.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-      }
-    },
-    "UrbanStressDashboard": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://677542194461/us-east-1",
-      "properties": {
-        "templateFile": "UrbanStressDashboard.template.json",
-        "terminationProtection": false,
-        "validateOnSynth": false,
-        "assumeRoleArn": "arn:aws:iam::677542194461:role/LabRole",
-        "cloudFormationExecutionRoleArn": "arn:aws:iam::677542194461:role/LabRole",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-677542194461-us-east-1/9b0b8f85b37a8954ab3c4d52d328c007b0f9551b12ab6c1e4e7484b454139e6f.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
-        "additionalDependencies": [
-          "UrbanStressDashboard.assets"
-        ],
-        "lookupRole": {
-          "arn": "arn:aws:iam::677542194461:role/LabRole",
-          "requiresBootstrapStackVersion": 8,
-          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
-      },
-      "dependencies": [
-        "UrbanStressDatamart",
-        "UrbanStressDashboard.assets"
-      ],
-      "additionalMetadataFile": "UrbanStressDashboard.metadata.json",
-      "displayName": "UrbanStressDashboard"
+      "additionalMetadataFile": "UrbanStressDemo.metadata.json",
+      "displayName": "UrbanStressDemo"
     },
     "Tree": {
       "type": "cdk:tree",

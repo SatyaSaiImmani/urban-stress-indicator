@@ -4,15 +4,12 @@ from datetime import date, timedelta
 
 from glue_db import get_connection  # injected via --extra-py-files
 
-# Optional --TARGET_DATE=YYYY-MM-DD; defaults to yesterday
-_argv_map = {}
-for _token in sys.argv:
-    if _token.startswith("--") and "=" in _token:
-        _k, _v = _token[2:].split("=", 1)
-        _argv_map[_k] = _v
-
-_target = _argv_map.get("TARGET_DATE")
-obs_date = date.fromisoformat(_target) if _target else date.today() - timedelta(days=1)
+try:
+    from awsglue.utils import getResolvedOptions
+    _args = getResolvedOptions(sys.argv, ["TARGET_DATE"])
+    obs_date = date.fromisoformat(_args["TARGET_DATE"])
+except Exception:
+    obs_date = date.today() - timedelta(days=1)
 
 REQUIRED_311 = ["service_request_id", "status", "requested_datetime"]
 REQUIRED_WEATHER = ["station_id", "obs_date", "tmax"]

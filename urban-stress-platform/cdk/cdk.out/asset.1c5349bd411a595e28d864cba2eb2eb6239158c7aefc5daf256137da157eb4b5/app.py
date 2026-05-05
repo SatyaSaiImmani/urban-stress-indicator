@@ -144,43 +144,20 @@ def fetch_composite(city="Boston"):
 
 @st.cache_data(ttl=3600)
 def fetch_last_updated():
-    conn = get_connection()
-
-    # Level 1 — pipeline_runs table (exact Step Functions completion timestamp)
+    # pipeline_runs table is optional — fall back gracefully if it doesn't exist.
     try:
+        conn = get_connection()
         with conn.cursor() as cur:
-            cur.execute(
-                "SELECT MAX(run_at) FROM pipeline_runs WHERE status = 'success'"
-            )
+            cur.execute("""
+                SELECT MAX(run_at) FROM pipeline_runs WHERE status = 'success'
+            """)
             row = cur.fetchone()
-        if row and row[0] is not None:
-            last_run = row[0]
-            return (
-                last_run.strftime("%Y-%m-%d %H:%M UTC"),
-                (last_run - timedelta(days=1)).strftime("%Y-%m-%d"),
-            )
+        if not row or row[0] is None:
+            return "N/A", str(date.today() - timedelta(days=1))
+        last_run = row[0]
+        return last_run.strftime("%Y-%m-%d %H:%M UTC"), (last_run - timedelta(days=1)).strftime("%Y-%m-%d")
     except Exception:
-        pass
-
-    # Level 2 — signal_scores latest score_date (always present after any ETL run)
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                "SELECT MAX(score_date) FROM signal_scores WHERE city = 'Boston'"
-            )
-            row = cur.fetchone()
-        if row and row[0] is not None:
-            score_date = row[0]
-            # score_date is the obs_date the ETL ran for (yesterday's data)
-            return (
-                f"{str(score_date)} (last scored date)",
-                str(score_date),
-            )
-    except Exception:
-        pass
-
-    # Level 3 — nothing in DB yet
-    return "N/A", str(date.today() - timedelta(days=1))
+        return "N/A", str(date.today() - timedelta(days=1))
 
 @st.cache_data(ttl=3600)
 def fetch_verdict(city="Boston"):
@@ -347,42 +324,6 @@ st.markdown("""
     font-size: 11px; font-weight: 600;
     display: flex; align-items: center; justify-content: center;
     cursor: default; line-height: 1;
-    z-index: 10;
-  }
-  /* Styled hover tooltip — replaces browser title= attribute */
-  .tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    background-color: #1e1e2e;
-    color: #e8e8f0;
-    text-align: left;
-    border-radius: 8px;
-    padding: 10px 13px;
-    position: absolute;
-    z-index: 9999;
-    bottom: 130%;
-    right: 0;
-    width: 250px;
-    font-size: 11.5px;
-    font-weight: 400;
-    line-height: 1.65;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-    pointer-events: none;
-    transition: opacity 0.15s ease;
-    white-space: normal;
-    border: 0.5px solid rgba(200,200,255,0.15);
-  }
-  .tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 100%; right: 6px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #1e1e2e transparent transparent transparent;
-  }
-  .info-icon:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
   }
   .readiness-normal   { background:#EAF3DE; color:#27500A;
                         border:0.5px solid #639922; border-radius:20px;
@@ -427,7 +368,7 @@ def metric_card(label, value, unit, delta_pct, tooltip, docs_anchor):
     val_str  = str(value) if not isinstance(value, float) else f"{value:.1f}"
     st.markdown(f"""
     <div class="metric-card">
-      <div class="info-icon">i<span class="tooltip-text">{tooltip}</span></div>
+      <div class="info-icon" title="{tooltip}">i</div>
       <div class="metric-label">{label}</div>
       <div class="metric-value">{val_str}</div>
       <div class="metric-unit">{unit}</div>

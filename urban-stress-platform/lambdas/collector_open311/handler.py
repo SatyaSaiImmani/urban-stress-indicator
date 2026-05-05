@@ -6,7 +6,7 @@ from s3 import write_bronze
 from db import get_connection, upsert
 
 BASE_URL  = "https://311.boston.gov/open311/v2/requests.json"
-PAGE_SIZE = 100   # Open311 Boston max page size
+PAGE_SIZE = 50   # Boston Open311 caps at 50; requesting 100 returns non-JSON garbage
 
 def fetch_requests(obs_date: date) -> list:
     """Paginate through all Open311 requests for obs_date."""
@@ -19,24 +19,43 @@ def fetch_requests(obs_date: date) -> list:
             "page_size":  PAGE_SIZE,
             "page":       page,
         }
-        r = requests.get(BASE_URL, params=params, timeout=30)
-        r.raise_for_status()
-        batch = r.json()
+        try:
+            r = requests.get(BASE_URL, params=params, timeout=30)
+            r.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Page {page} HTTP error: {e} — stopping")
+            break
+
+        # API returns empty body (not []) when no more results
+        if not r.text.strip():
+            break
+
+        try:
+            batch = r.json()
+        except Exception:
+            print(f"  Bad JSON on page {page} (body: {r.text[:100]!r}) — stopping")
+            break
+
         if not batch:
             break
+
         all_results.extend(batch)
         print(f"  Page {page}: {len(batch)} records (total so far: {len(all_results)})")
+
         if len(batch) < PAGE_SIZE:
             break   # last page — no more results
         page += 1
+
     return all_results
 
 def parse_requests(raw: list) -> list:
     rows = []
     for r in raw:
+        if not r.get("service_request_id"):
+            continue
         parts = (r.get("service_code") or "").split(":")
         rows.append({
-            "service_request_id": r.get("service_request_id"),
+            "service_request_id": r["service_request_id"],
             "service_code":       r.get("service_code"),
             "service_name":       r.get("service_name"),
             "department":         parts[0] if len(parts) > 0 else None,
@@ -50,7 +69,7 @@ def parse_requests(raw: list) -> list:
             "neighbourhood":      None,  # derived via spatial join in Glue
             "description":        r.get("description"),
         })
-    return [row for row in rows if row["service_request_id"]]
+    return rows
 
 def handler(event=None, context=None):
     obs_date = date.today() - timedelta(days=1)

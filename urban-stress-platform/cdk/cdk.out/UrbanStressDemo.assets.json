@@ -1,0 +1,37 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "3dc01a4254c3e07bb3fe748f3ae66d0e0dc22f2e3a4023cc3763c6a4aff8cbef": {
+      "displayName": "UrbanStressDemo Template",
+      "source": {
+        "path": "UrbanStressDemo.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "836734770581-us-east-1-1192d4ea": {
+          "bucketName": "cdk-hnb659fds-assets-836734770581-us-east-1",
+          "objectKey": "3dc01a4254c3e07bb3fe748f3ae66d0e0dc22f2e3a4023cc3763c6a4aff8cbef.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::836734770581:role/cdk-hnb659fds-file-publishing-role-836734770581-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {
+    "b1ec4f6b92269b9209fd93dee1a5cc086b841964b594e7289110ad0ae3acde8c": {
+      "displayName": "DashboardTaskDef/Dashboard/AssetImage",
+      "source": {
+        "directory": "asset.b1ec4f6b92269b9209fd93dee1a5cc086b841964b594e7289110ad0ae3acde8c",
+        "platform": "linux/amd64"
+      },
+      "destinations": {
+        "836734770581-us-east-1-8a84c18e": {
+          "repositoryName": "cdk-hnb659fds-container-assets-836734770581-us-east-1",
+          "imageTag": "b1ec4f6b92269b9209fd93dee1a5cc086b841964b594e7289110ad0ae3acde8c",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::836734770581:role/cdk-hnb659fds-image-publishing-role-836734770581-us-east-1"
+        }
+      }
+    }
+  }
+}
