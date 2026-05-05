@@ -183,21 +183,29 @@ def process_date(target_date_str, conn):
         conn.commit()
         return "unavailable"
 
-    # 2. Parse + filter for city
+    # 2. Parse + filter for city — stream in chunks to avoid OOM on 1-2 GB exports
+    CHUNK_SIZE = 50_000
+    city_chunks = []
+    total_rows  = 0
     with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
         with zf.open(zf.namelist()[0]) as f:
-            df_raw = pd.read_csv(
+            for chunk in pd.read_csv(
                 f, sep="\t", header=None, names=GDELT_COLS,
                 dtype=str, low_memory=False, on_bad_lines="skip",
-            )
+                chunksize=CHUNK_SIZE,
+            ):
+                total_rows += len(chunk)
+                mask = (
+                    chunk["ActionGeo_FullName"].str.contains(CITY, na=False, case=False) |
+                    chunk["Actor1Geo_FullName"].str.contains(CITY, na=False, case=False) |
+                    chunk["Actor2Geo_FullName"].str.contains(CITY, na=False, case=False)
+                )
+                filtered = chunk[mask]
+                if not filtered.empty:
+                    city_chunks.append(filtered)
 
-    boston_mask = (
-        df_raw["ActionGeo_FullName"].str.contains(CITY, na=False, case=False) |
-        df_raw["Actor1Geo_FullName"].str.contains(CITY, na=False, case=False) |
-        df_raw["Actor2Geo_FullName"].str.contains(CITY, na=False, case=False)
-    )
-    df = df_raw[boston_mask].copy()
-    print(f"  [{target_date_str}] {len(df_raw):,} global events → {len(df)} Boston events")
+    df = pd.concat(city_chunks, ignore_index=True) if city_chunks else pd.DataFrame(columns=GDELT_COLS)
+    print(f"  [{target_date_str}] {total_rows:,} global events → {len(df)} {CITY} events")
 
     for col in ["GoldsteinScale", "NumMentions", "NumSources", "NumArticles", "AvgTone"]:
         df[col] = pd.to_numeric(df[col], errors="coerce")

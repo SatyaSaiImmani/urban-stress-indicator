@@ -16,7 +16,8 @@ ARTIFACTS_BUCKET  = f"urban-stress-artifacts-{ACCOUNT}"
 
 class IngestionStack(cdk.Stack):
     def __init__(self, scope: Construct, id: str,
-                 db_endpoint: str, db_secret_arn: str, **kwargs):
+                 db_endpoint: str, db_secret_arn: str,
+                 cdo_token: str = "", **kwargs):
         super().__init__(scope, id, **kwargs)
 
         # --- S3 buckets ---
@@ -89,6 +90,7 @@ class IngestionStack(cdk.Stack):
                     "DB_NAME":          "postgres",
                     "DB_PORT":          "5432",
                     "DB_SECRET_ARN":    db_secret_arn,
+                    "CDO_TOKEN":        cdo_token,
                 }
             ),
         )

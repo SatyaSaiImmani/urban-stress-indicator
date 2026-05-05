@@ -11,7 +11,7 @@ try:
     from awsglue.utils import getResolvedOptions
     _args = getResolvedOptions(sys.argv, ["TARGET_DATE"])
     obs_date = date.fromisoformat(_args["TARGET_DATE"])
-except Exception:
+except BaseException:
     obs_date = date.today() - timedelta(days=1)
 
 SEVERITY  = {"Extreme": 4, "Severe": 3, "Moderate": 2, "Minor": 1, "Unknown": 0}

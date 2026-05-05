@@ -8,7 +8,7 @@ try:
     from awsglue.utils import getResolvedOptions
     _args = getResolvedOptions(sys.argv, ["TARGET_DATE"])
     obs_date = date.fromisoformat(_args["TARGET_DATE"])
-except Exception:
+except BaseException:
     obs_date = date.today() - timedelta(days=1)
 
 def run_composite_score(conn, obs_date: date):
